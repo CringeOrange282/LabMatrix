@@ -68,3 +68,5 @@ Testing/
 .cache/
 .vs/
 packages/
+X64/
+.vs
