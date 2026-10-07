@@ -204,7 +204,8 @@ inline T& Vector<T>::back() {
 }
 
 template <typename T>
-Vector<T>::Vector(size_t size) : _mem(MemData<T>(size)), _front(0), _back(0) {}
+Vector<T>::Vector(size_t size) : _mem(MemData<T>(size)), _front(0), _back(size == 0 ? 0 : size - 1) {
+}
 
 template <typename T>
 Vector<T>::Vector(std::initializer_list<T> vec) : _mem(MemData<T>(vec)), _front(0), _back(_mem.size() - 1) {}
