@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LabMatrix", "LabMatrix\LabM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixTests", "MatrixTests\MatrixTests.vcxproj", "{9C22AD5A-A577-4597-89F3-B3B95774F2B9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LabMathVector", "LabMathVector\LabMathVector.vcxproj", "{B303C46A-BBA9-4E65-9242-65AF02A71C0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{9C22AD5A-A577-4597-89F3-B3B95774F2B9}.Release|x64.Build.0 = Release|x64
 		{9C22AD5A-A577-4597-89F3-B3B95774F2B9}.Release|x86.ActiveCfg = Release|Win32
 		{9C22AD5A-A577-4597-89F3-B3B95774F2B9}.Release|x86.Build.0 = Release|Win32
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Debug|x64.ActiveCfg = Debug|x64
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Debug|x64.Build.0 = Debug|x64
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Debug|x86.ActiveCfg = Debug|Win32
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Debug|x86.Build.0 = Debug|Win32
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Release|x64.ActiveCfg = Release|x64
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Release|x64.Build.0 = Release|x64
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Release|x86.ActiveCfg = Release|Win32
+		{B303C46A-BBA9-4E65-9242-65AF02A71C0F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
