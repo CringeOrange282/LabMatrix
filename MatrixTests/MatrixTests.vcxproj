@@ -57,7 +57,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>C:\Users\vladl\source\repos\LabMatrix\TMatrix;C:\Users\vladl\source\repos\LabMatrix\LabMathVector;C:\Users\vladl\source\repos\LabMatrix\LabMatrix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\vladl\source\repos\LabMatrix\TriangleMatrix;C:\Users\vladl\source\repos\LabMatrix\TMatrix;C:\Users\vladl\source\repos\LabMatrix\LabMathVector;C:\Users\vladl\source\repos\LabMatrix\LabMatrix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -106,6 +106,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="tests_TriangleMatrix.cpp" />
     <ClCompile Include="test_MathVector.cpp" />
     <ClCompile Include="test_TMatrix.cpp" />
     <ClCompile Include="test_vector.cpp" />
@@ -122,6 +123,9 @@
     </ProjectReference>
     <ProjectReference Include="..\TMatrix\TMatrix.vcxproj">
       <Project>{69f0e20f-7978-4395-8076-001dc5de6a58}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\TriangleMatrix\TriangleMatrix.vcxproj">
+      <Project>{8b104fd2-40ef-4846-ab83-c69417582f1d}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
