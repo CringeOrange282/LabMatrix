@@ -1,6 +1,8 @@
 #pragma once
 #include "MathVector.h"
 #include <stdexcept>
+#include <iostream>
+#include <initializer_list>
 
 template <typename T>
 class Matrix : public MathVector<MathVector<T>> {
@@ -21,6 +23,8 @@ public:
 	~Matrix() = default;
 
 	Matrix<T> operator*(const Matrix<T>& other) const;
+	MathVector<T> operator*(const MathVector<T>& vec) const;
+
 	Matrix<T> Transposition() const noexcept;
 
 	bool operator==(const Matrix<T>& other) const noexcept;
@@ -28,27 +32,31 @@ public:
 };
 
 template <typename T>
-std::ostream& operator<<(std::ostream& out, Matrix<T>& matrix) {
+std::ostream& operator<<(std::ostream& out, const Matrix<T>& matrix) {
 	for (size_t i = 0; i < matrix.getN(); ++i) {
-		out << matrix[i];
+		for (size_t j = 0; j < matrix.getM(); ++j) {
+			out << matrix[i][j] << " ";
+		}
+		out << "\n";
 	}
 	return out;
 }
 
 template <typename T>
-Matrix<T>::Matrix() : MathVector<MathVector<T>>((size_t)0) {}
+Matrix<T>::Matrix() : MathVector<MathVector<T>>(0) {}
 
 template <typename T>
-Matrix<T>::Matrix(size_t N, size_t M) : MathVector<MathVector<T>>((size_t)0) {
+Matrix<T>::Matrix(size_t N, size_t M) : MathVector<MathVector<T>>(N) {
 	for (size_t i = 0; i < N; ++i) {
-		this->push_back(MathVector<T>(M));
+		(*this)[i] = MathVector<T>(M);
 	}
 }
 
 template <typename T>
-Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> list) : MathVector<MathVector<T>>((size_t)0) {
-	for (auto row : list) {
-		this->push_back(MathVector<T>(row));
+Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> list) : MathVector<MathVector<T>>(list.size()) {
+	size_t i = 0;
+	for (const auto& row : list) {
+		(*this)[i++] = MathVector<T>(row);
 	}
 }
 
@@ -85,6 +93,18 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
 		for (size_t j = 0; j < otherM; ++j) {
 			res[i][j] = (*this)[i] * otherT[j];
 		}
+	}
+	return res;
+}
+
+template <typename T>
+MathVector<T> Matrix<T>::operator*(const MathVector<T>& vec) const {
+	if (this->getM() != vec.size()) {
+		throw std::logic_error("Matrix columns must match vector size");
+	}
+	MathVector<T> res(this->getN());
+	for (size_t i = 0; i < this->getN(); ++i) {
+		res[i] = (*this)[i] * vec;
 	}
 	return res;
 }

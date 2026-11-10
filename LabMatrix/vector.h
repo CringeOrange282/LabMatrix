@@ -1,13 +1,15 @@
 #pragma once
-
 #include <iostream>
 #include <stdexcept>
+#include <initializer_list>
+#include <cstdlib>
 #include "memdata.h"
 
 enum DirectionToShift { _Left, _Right };
 
 template <typename T>
 class Vector {
+protected:
     MemData<T> _mem;
     size_t _front;
     size_t _back;
@@ -151,12 +153,12 @@ public:
     void shuffle() noexcept;
     void selection_sort() noexcept;
     void shrink_to_fit();
+    void resize(size_t new_size);
 
 private:
     void push_elements_to_insert(size_t, DirectionToShift, size_t = 1);
     void push_elements_to_erase(size_t, DirectionToShift, size_t = 1);
     void reset_memory(size_t);
-    void clear();
 };
 
 template <typename T>
@@ -202,19 +204,19 @@ inline T& Vector<T>::back() {
     if (_mem._size == 0) throw std::logic_error("empty vector");
     return _mem._data[_back];
 }
-
 template <typename T>
 Vector<T>::Vector(size_t size) : _mem(MemData<T>(size)), _front(0), _back(size == 0 ? 0 : size - 1) {
 }
 
-template <typename T>
-Vector<T>::Vector(std::initializer_list<T> vec) : _mem(MemData<T>(vec)), _front(0), _back(_mem.size() - 1) {}
 
 template <typename T>
-Vector<T>::Vector(T* data, size_t size) : _mem(MemData<T>(data, size)), _front(0), _back(_mem.size() - 1) {}
+Vector<T>::Vector(std::initializer_list<T> vec) : _mem(MemData<T>(vec)), _front(0), _back(_mem.size() == 0 ? 0 : _mem.size() - 1) {}
 
 template <typename T>
-Vector<T>::Vector(const Vector<T>& other) : _mem(other._mem._size), _front(0), _back(other._mem._size - 1) {
+Vector<T>::Vector(T* data, size_t size) : _mem(MemData<T>(data, size)), _front(0), _back(_mem.size() == 0 ? 0 : _mem.size() - 1) {}
+
+template <typename T>
+Vector<T>::Vector(const Vector<T>& other) : _mem(other._mem._size), _front(0), _back(other._mem._size == 0 ? 0 : other._mem._size - 1) {
     _mem._size = other._mem._size;
     for (size_t i = 0; i < other._mem._size; i++) {
         size_t other_index = (other._front + i) % other._mem._capacity;
@@ -319,7 +321,6 @@ void Vector<T>::pop_back(size_t count) {
         reset_memory(_mem._size);
     }
 }
-
 template <typename T>
 void Vector<T>::erase(size_t human_index, size_t count) {
     if (human_index > _mem._size - 1) throw std::logic_error("index out of range");
@@ -369,14 +370,14 @@ template <typename T>
 void Vector<T>::push_back(std::initializer_list<T> other) noexcept {
     if (is_empty()) {
         _front = 0;
-        _back = -1;
+        _back = 0;
     }
     if (_mem._size + other.size() > _mem._capacity) {
         reset_memory(_mem._size + other.size());
         _front = 0;
         _back = _mem._size - 1;
     }
-    size_t index = _back != -1 ? _back + 1 : 0;
+    size_t index = _mem._size > 0 ? (_back + 1) % _mem._capacity : 0;
     _back = (_back + other.size()) % _mem._capacity;
     for (T element : other) {
         _mem._data[index] = element;
@@ -427,7 +428,7 @@ Vector<T>& Vector<T>::operator=(Vector<T>&& other) noexcept {
     _mem._size = other._mem._size;
     _mem._capacity = other._mem._capacity;
     _front = 0;
-    _back = _mem._size - 1;
+    _back = _mem._size == 0 ? 0 : _mem._size - 1;
     size_t old_index = other._front;
     for (size_t i = 0; i < _mem._size; i++) {
         _mem._data[i] = other._mem._data[old_index++];
@@ -452,11 +453,9 @@ template <typename T>
 std::istream& operator>>(std::istream& is, Vector<T>& vec) {
     size_t new_size;
     is >> new_size;
-
     if (!vec.is_empty()) {
         vec.pop_front(vec.size());
     }
-
     for (size_t i = 0; i < new_size; i++) {
         T element;
         is >> element;
@@ -470,7 +469,7 @@ void Vector<T>::push_elements_to_insert(size_t human_index, DirectionToShift dir
     size_t real_index = (_front + human_index) % _mem._capacity;
     size_t real_new_index;
     if (direction == _Left) {
-        for (size_t i = _front; i != real_index + 1; i = (i + 1) % _mem._capacity) {
+        for (size_t i = _front; i != (real_index + 1) % _mem._capacity; i = (i + 1) % _mem._capacity) {
             real_new_index = (i - count + _mem._capacity) % _mem._capacity;
             _mem._data[real_new_index] = _mem._data[i];
         }
@@ -518,7 +517,7 @@ template <typename T>
 void Vector<T>::reset_memory(size_t new_size) {
     _mem.reset_memory(new_size, _front);
     _front = 0;
-    _back = _mem._size - 1;
+    _back = _mem._size == 0 ? 0 : _mem._size - 1;
 }
 
 template <typename T>
@@ -554,14 +553,23 @@ void Vector<T>::shrink_to_fit() {
     if (_mem._size == _mem._capacity) return;
     size_t new_capacity = (_mem._size == 0) ? MEM_STEP : _mem._size;
     T* new_data = new T[new_capacity];
+    size_t old_index = _front;
     for (size_t i = 0; i < _mem._size; i++) {
-        size_t real_index = (_front + i) % _mem._capacity;
-        new_data[i] = _mem._data[real_index];
+        new_data[i] = _mem._data[old_index++];
+        if (old_index == _mem._capacity) old_index = 0;
     }
-    _mem.set_memory(_mem._size);
     delete[] _mem._data;
     _mem._data = new_data;
     _mem._capacity = new_capacity;
     _front = 0;
-    _back = (_mem._size == 0) ? 0 : _mem._size - 1;
+    _back = _mem._size == 0 ? 0 : _mem._size - 1;
+}
+
+template <typename T>
+void Vector<T>::resize(size_t new_size) {
+    if (new_size > _mem._capacity) {
+        reset_memory(new_size);
+    }
+    _mem._size = new_size;
+    _back = _mem._size == 0 ? 0 : _mem._size - 1;
 }
